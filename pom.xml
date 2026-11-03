@@ -167,7 +167,7 @@
                     <version>${maven-surefire-plugin.version}</version>
                     <configuration>
                         
-                        <forkMode>once</forkMode>
+                        <failIfNoTests>true</failIfNoTests>
                         <argLine>${argLine} -Xmx1024m -Dfile.encoding=UTF-8</argLine>
                         <additionalClasspathElements>
                             <additionalClasspathElement>${basedir}/target/test-classes</additionalClasspathElement>
