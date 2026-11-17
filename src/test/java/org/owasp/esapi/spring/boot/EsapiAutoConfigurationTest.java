@@ -29,6 +29,15 @@ class EsapiAutoConfigurationTest {
     }
 
     @Test
+    void enabledApplicationContextShouldStart() {
+        runner.withPropertyValues("spring.esapi.enabled=true")
+                .run(context -> {
+                    assertThat(context).hasNotFailed();
+                    assertThat(context).hasSingleBean(EsapiAutoConfiguration.class);
+                });
+    }
+
+    @Test
     void propertiesDefaults() {
         EsapiProperties props = new EsapiProperties();
         assertThat(EsapiProperties.PREFIX).isEqualTo("spring.esapi");
