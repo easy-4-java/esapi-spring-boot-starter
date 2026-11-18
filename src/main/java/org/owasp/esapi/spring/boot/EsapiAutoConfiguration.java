@@ -14,6 +14,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
+import java.util.Properties;
+
 @Configuration
 @ConditionalOnClass(ESAPI.class)
 @ConditionalOnProperty(prefix = EsapiProperties.PREFIX, value = "enabled", havingValue = "true")
@@ -24,10 +26,11 @@ public class EsapiAutoConfiguration implements ApplicationContextAware {
 	 
     @Bean
 	public PropertyPlaceholderConfigurer propertyPlaceholderConfigurer(){
-    	EncryptedPropertyPlaceholderConfigurer placeholderConfigurer = new EncryptedPropertyPlaceholderConfigurer();
+		EncryptedPropertyPlaceholderConfigurer placeholderConfigurer = new SpringCompatibleEncryptedPropertyPlaceholderConfigurer();
     	PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 	    Resource resource = resolver.getResource("classpath:application.properties");
 	    placeholderConfigurer.setLocation(resource);
+	    placeholderConfigurer.setIgnoreResourceNotFound(true);
 	    return placeholderConfigurer;
 	}
 	/*
@@ -98,6 +101,13 @@ public class EsapiAutoConfiguration implements ApplicationContextAware {
 	public ApplicationContext getApplicationContext() {
 		return applicationContext;
 	}
+
+	private static final class SpringCompatibleEncryptedPropertyPlaceholderConfigurer
+			extends EncryptedPropertyPlaceholderConfigurer {
+		@Override
+		protected void convertProperties(Properties properties) {
+			// ReferenceEncryptedProperties already decrypts getProperty values; its entrySet is intentionally disabled.
+		}
+	}
 	
 }
- 
